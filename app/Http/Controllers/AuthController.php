@@ -6,6 +6,8 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -59,6 +61,35 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => null,
+        ]);
+    }
+
+    // Google
+    public function googleRedirect()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function googleCallback()
+    {
+        $googleUser = Socialite::driver('google')->stateless()->user();
+
+        $user = User::updateOrCreate([
+            'google_id' => $googleUser->id,
+        ], [
+            'name' => $googleUser->getName(),
+            'email' => $googleUser->getEmail(),
+            'password' => Str::random()
+        ]);
+
+        $token = $user->createToken('accessToken')->accessToken;
+
+        // TODO: Redirect to the frontend with the cookie containing the token.
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'token' => $token,
+            ],
         ]);
     }
 }
