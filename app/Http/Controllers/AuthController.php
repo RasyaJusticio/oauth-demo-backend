@@ -51,4 +51,14 @@ class AuthController extends Controller
             ],
         ]);
     }
+
+    public function logout()
+    {
+        Auth::user()->token()->revoke();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => null,
+        ]);
+    }
 }
