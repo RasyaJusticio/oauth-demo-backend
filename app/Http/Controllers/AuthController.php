@@ -21,10 +21,8 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => [
-                'token' => $token,
-            ],
-        ]);
+            'data' => null,
+        ])->cookie('laravel_token', $token, 10080, null, null, false, true);
     }
 
     public function login(LoginRequest $request)
@@ -48,10 +46,8 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => [
-                'token' => $token,
-            ],
-        ]);
+            'data' => null
+        ])->cookie('laravel_token', $token, 10080, null, null, false, true);
     }
 
     public function logout()
@@ -61,7 +57,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => null,
-        ]);
+        ])->withoutCookie('laravel_token');
     }
 
     // Google
@@ -87,9 +83,7 @@ class AuthController extends Controller
         // TODO: Redirect to the frontend with the cookie containing the token.
         return response()->json([
             'status' => 'success',
-            'data' => [
-                'token' => $token,
-            ],
-        ]);
+            'data' => null
+        ])->cookie('laravel_token', $token, 10080, null, null, false, true);
     }
 }
