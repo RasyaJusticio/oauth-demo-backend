@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -14,13 +15,40 @@ class AuthController extends Controller
 
         $user = User::create($validatedData);
 
-        $token = $user->createToken("accessToken")->accessToken;
+        $token = $user->createToken('accessToken')->accessToken;
 
         return response()->json([
             'status' => 'success',
             'data' => [
-                'token' => $token
-            ]
+                'token' => $token,
+            ],
+        ]);
+    }
+
+    public function login(LoginRequest $request)
+    {
+        $validatedData = $request->validated();
+
+        if (! Auth::attempt($validatedData)) {
+            return response()->json([
+                'status' => 'fail',
+                'data' => [
+                    'errors' => [
+                        'message' => 'Email or password is incorrect',
+                    ],
+                ],
+            ], 401);
+        }
+
+        $user = Auth::user();
+
+        $token = $user->createToken('accessToken')->accessToken;
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'token' => $token,
+            ],
         ]);
     }
 }
