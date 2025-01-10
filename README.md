@@ -103,4 +103,4 @@ This project is intended to be used with [OAuth Demo Frontend](https://github.co
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](/LICENSE)
